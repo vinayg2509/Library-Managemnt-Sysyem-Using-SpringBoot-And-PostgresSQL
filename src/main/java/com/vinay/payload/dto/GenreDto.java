@@ -1,27 +1,21 @@
-package com.vinay.model;
+package com.vinay.payload.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-@Table(name = "genre")
-@Entity
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Genre {
+@Data
+@Getter
+@Setter
+public class GenreDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Genre code is mandatory")
@@ -36,21 +30,17 @@ public class Genre {
     @Min(value =0 ,message = "Display order should not be negative")
     private Integer displayOrder=0;
 
-    @Column(nullable = false)
-    private Boolean active=true;
+    private Boolean active;
 
-    @ManyToOne
-    private Genre parentGenre;
+    private Long parentGenreId;
 
-    @OneToMany
-    private List<Genre> subGenre;
+    private String parentGenreName;
 
-//    @OneToMany(mappedBy = "genre" ,cascade = CascadeType.PERSIST)
-//    private List<Book>books=new ArrayList<>();
+    private List<GenreDto> subGenre;
 
-    @CreationTimestamp
+    private Long bookCount;
+
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
