@@ -1,6 +1,6 @@
 package com.vinay.controller;
 
-import com.vinay.model.Genre;
+import com.vinay.exception.GenreException;
 import com.vinay.payload.dto.GenreDto;
 import com.vinay.services.GenreService;
 import jakarta.validation.Valid;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/genre")
@@ -29,8 +28,14 @@ public class GenreController {
     @GetMapping("/getallgenres")
     public  ResponseEntity<?> getAllGenres()
     {
-        List<GenreDto> getAllGenres=genreService.getAllGeners();
+        List<GenreDto> getAllGenres=genreService.getAllGenres();
         return new ResponseEntity<>(getAllGenres,HttpStatus.OK);
+    }
+
+    @GetMapping("/getgenrebyid/{id}")
+    public ResponseEntity<?> getGenreById(@PathVariable Long id) throws GenreException {
+        GenreDto genreDto=genreService.getGenresById(id);
+        return new ResponseEntity<>(genreDto,HttpStatus.OK);
     }
 
 }
