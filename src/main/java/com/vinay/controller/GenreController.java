@@ -1,6 +1,7 @@
 package com.vinay.controller;
 
 import com.vinay.exception.GenreException;
+import com.vinay.model.Genre;
 import com.vinay.payload.dto.GenreDto;
 import com.vinay.services.GenreService;
 import jakarta.validation.Valid;
@@ -36,6 +37,19 @@ public class GenreController {
     public ResponseEntity<?> getGenreById(@PathVariable Long id) throws GenreException {
         GenreDto genreDto=genreService.getGenresById(id);
         return new ResponseEntity<>(genreDto,HttpStatus.OK);
+    }
+
+    @PutMapping("/updategenre/{genreId}")
+    private ResponseEntity<GenreDto> updateGenre
+            (@PathVariable Long genreId,
+             @Valid @RequestBody GenreDto genreDto) throws GenreException {
+            try {
+                GenreDto updatedGenre=genreService.updateGenre(genreId,genreDto);
+                return ResponseEntity.ok(updatedGenre);
+            }catch (GenreException e)
+            {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
     }
 
 }

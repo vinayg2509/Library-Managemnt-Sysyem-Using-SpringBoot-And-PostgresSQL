@@ -17,7 +17,7 @@ public interface GenreService {
 
      void hardDelete(Long genreId);
 
-     GenreDto updateGenre(Long genreId, GenreDto genreDto);
+     GenreDto updateGenre(Long genreId, GenreDto genreDto)throws GenreException;
 
      List<GenreDto> getAllActiveGenreWithSubGenre();
 
