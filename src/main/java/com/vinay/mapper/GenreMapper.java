@@ -2,6 +2,7 @@ package com.vinay.mapper;
 
 import com.vinay.payload.dto.GenreDto;
 import com.vinay.model.Genre;
+import com.vinay.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +12,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GenreMapper {
 
+    private final GenreRepository genreRepository;
 
-        public static GenreDto toDto(Genre savedGenre)
+    public  GenreDto toDto(Genre savedGenre)
         {
             if (savedGenre == null) return null;
 
@@ -38,12 +40,28 @@ public class GenreMapper {
                 dto.setSubGenre(
                         savedGenre.getSubGenre().stream()
                                 .filter(Genre::getActive)
-                                .map(GenreMapper::toDto)
+                                .map(this::toDto)
                                 .collect(Collectors.toList())
                 );
             }
 
             return dto;
+        }
+
+        public Genre toEntity(GenreDto genreDto)
+        {
+            Genre genre=Genre.builder()
+                    .code(genreDto.getCode())
+                    .name(genreDto.getName())
+                    .displayOrder(genreDto.getDisplayOrder())
+                    .description(genreDto.getDescription())
+                    .active(true)
+                    .build();
+            if(genreDto.getParentGenreId()!=null)
+            {
+               genreRepository.findById(genreDto.getParentGenreId()).ifPresent(genre::setParentGenre);
+            }
+            return genre;
         }
 
 
