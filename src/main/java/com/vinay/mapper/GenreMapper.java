@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class GenreMapper {
 
 
-        public GenreDto toDto(Genre savedGenre)
+        public static GenreDto toDto(Genre savedGenre)
         {
             if (savedGenre == null) return null;
 
@@ -38,7 +38,7 @@ public class GenreMapper {
                 dto.setSubGenre(
                         savedGenre.getSubGenre().stream()
                                 .filter(Genre::getActive)
-                                .map(this::toDto)
+                                .map(GenreMapper::toDto)
                                 .collect(Collectors.toList())
                 );
             }

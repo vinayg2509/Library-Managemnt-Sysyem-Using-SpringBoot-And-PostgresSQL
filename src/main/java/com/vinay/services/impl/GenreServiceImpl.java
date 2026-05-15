@@ -9,6 +9,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class GenreServiceImpl implements GenreService
@@ -36,5 +39,11 @@ public class GenreServiceImpl implements GenreService
         Genre saveGenre=genreRepository.save(genre);
 
         return genreMapper.toDto(saveGenre);
+    }
+
+    @Override
+    public List<GenreDto> getAllGeners() {
+        return genreRepository.findAll().stream().map(GenreMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
