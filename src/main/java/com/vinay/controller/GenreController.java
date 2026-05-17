@@ -3,6 +3,7 @@ package com.vinay.controller;
 import com.vinay.exception.GenreException;
 import com.vinay.model.Genre;
 import com.vinay.payload.dto.GenreDto;
+import com.vinay.payload.response.ApiResponse;
 import com.vinay.services.GenreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,50 @@ public class GenreController {
             {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
+    }
+
+    @DeleteMapping("soft-delete-genre/{genreId}")
+    public ResponseEntity<ApiResponse> softDelete(@PathVariable Long genreId)
+    {
+        try {
+            genreService.deleteGenre(genreId);
+            return ResponseEntity.ok(new ApiResponse("Genre softly Deleted",true));
+        } catch (GenreException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(e.getMessage(),false));
+        }
+    }
+
+    @DeleteMapping("hard-delete-genre/{genreId}")
+    public ResponseEntity<ApiResponse> hardDelete(@PathVariable Long genreId)
+    {
+        try {
+            genreService.deleteGenre(genreId);
+            return ResponseEntity.ok(new ApiResponse("Genre Hardly Deleted",true));
+        } catch (GenreException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(e.getMessage(),false));
+        }
+    }
+
+    @GetMapping("/top-level-genre")
+    public ResponseEntity<?> getTopLevelGenre() throws GenreException {
+        List<GenreDto> genreDto=genreService.getTopLevelGenre();
+        return  ResponseEntity.ok(genreDto);
+    }
+
+    @GetMapping("/count-active-genre")
+    public ResponseEntity<?> getAllTotalGenre() throws GenreException {
+       Long activeGenre=genreService.getAllTotalActiveGenre();
+        return new ResponseEntity<>(activeGenre,HttpStatus.OK);
+    }
+
+    @GetMapping("/tota-book-count-by-genre/{genreId}")
+    public ResponseEntity<?> getTotalBook(@PathVariable Long genreId) throws GenreException {
+        Long totalBookByGenre=genreService.getActiveBookCountByGenre(genreId);
+        return new ResponseEntity<>(totalBookByGenre,HttpStatus.OK);
     }
 
 }

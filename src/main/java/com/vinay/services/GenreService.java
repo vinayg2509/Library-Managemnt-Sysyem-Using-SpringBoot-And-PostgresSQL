@@ -13,9 +13,9 @@ public interface GenreService {
 
      GenreDto getGenresById(Long genreId) throws GenreException;
 
-     void deleteGenre(Long genreId);
+     void deleteGenre(Long genreId) throws GenreException;
 
-     void hardDelete(Long genreId);
+     void hardDelete(Long genreId) throws GenreException;
 
      GenreDto updateGenre(Long genreId, GenreDto genreDto)throws GenreException;
 
@@ -27,5 +27,7 @@ public interface GenreService {
 
     Long getAllTotalActiveGenre();
 
-    Long getActiveBookCountByGenreId(Long genreId);
+    Long getActiveBookCountByGenre(Long genreId);
+
+
 }

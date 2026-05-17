@@ -6,6 +6,7 @@ import com.vinay.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +25,7 @@ public class GenreMapper {
                     .name(savedGenre.getName())
                     .description(savedGenre.getDescription())
                     .displayOrder(savedGenre.getDisplayOrder())
-                    .active(true)
+                    .active(savedGenre.getActive())
                     .createdAt(savedGenre.getCreatedAt())
                     .updatedAt(savedGenre.getUpdatedAt() )
                     .build();
@@ -79,6 +80,11 @@ public class GenreMapper {
             if(genreDto.getParentGenreId()!=null)
               genreRepository.findById(genreDto.getParentGenreId()).
                       ifPresent(existingGenre::setParentGenre);
+        }
+
+         public List<GenreDto> toDtoList(List<Genre> genreList)
+        {
+           return genreList.stream().map(this::toDto).collect(Collectors.toList());
         }
 
 

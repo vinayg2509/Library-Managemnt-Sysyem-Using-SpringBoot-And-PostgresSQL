@@ -45,13 +45,21 @@ public class GenreServiceImpl implements GenreService
     }
  
     @Override
-    public void deleteGenre(Long genreId) {
+    public void deleteGenre(Long genreId) throws GenreException {
+        Genre existingGenre=genreRepository.findById(genreId)
+                .orElseThrow(()->new GenreException("No genre found for the given id: " + genreId));
 
+        existingGenre.setActive(false);
+        genreRepository.save(existingGenre);
     }
 
     @Override
-    public void hardDelete(Long genreId) {
+    public void hardDelete(Long genreId) throws GenreException {
+        Genre existingGenre=genreRepository.findById(genreId)
+                .orElseThrow(()->new GenreException("No genre found for the given id: " + genreId));
 
+        existingGenre.setActive(false);
+        genreRepository.save(existingGenre);
     }
 
     @Override
@@ -65,21 +73,24 @@ public class GenreServiceImpl implements GenreService
 
     @Override
     public List<GenreDto> getAllActiveGenreWithSubGenre() {
-        return List.of();
+
+        List<Genre> allGenreList=genreRepository.findByActiveTrueOrderByDisplayOrderAsc();
+        return  genreMapper.toDtoList(allGenreList);
     }
 
     @Override
     public List<GenreDto> getTopLevelGenre() {
-        return List.of();
+        List<Genre> topLevelGenres=genreRepository.findByParentGenreIdNullAndActiveTrueOrderByDisplayOrderAsc();
+        return  genreMapper.toDtoList(topLevelGenres);
     }
 
     @Override
     public Long getAllTotalActiveGenre() {
-        return 0L;
+        return genreRepository.getCountByActiveTrue();
     }
 
     @Override
-    public Long getActiveBookCountByGenreId(Long genreId) {
+    public Long getActiveBookCountByGenre(Long genreId) {
         return 0L;
     }
 }
