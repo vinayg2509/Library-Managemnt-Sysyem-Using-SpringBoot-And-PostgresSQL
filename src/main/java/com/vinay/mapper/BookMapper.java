@@ -1,8 +1,10 @@
 package com.vinay.mapper;
 
+import com.vinay.exception.BookException;
 import com.vinay.model.Book;
 import com.vinay.model.Genre;
 import com.vinay.payload.dto.BookDto;
+import com.vinay.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +12,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BookMapper
 {
+    private final BookException bookException;
+    private final GenreRepository genreRepository;
+
     private BookDto toDto(Book book)
     {
         if (book==null)return null;
@@ -42,18 +47,17 @@ public class BookMapper
         return bookDto;
     }
 
-    private Book toEntity(BookDto bookDto)
-    {
+    private Book toEntity(BookDto bookDto) throws BookException {
         Book book=new Book();
         book.setId(bookDto.getId());
         book.setIsbn(bookDto.getIsbn());
         book.setBookAuthor(bookDto.getBookAuthor());
         book.setBookTitle(bookDto.getBookTitle());
-//        if (bookDto.getGenreId() != null) {
-//            Genre genre = genreRepository.findById(dto.getGenreId())
-//                    .orElseThrow(() -> new BookException("Genre with ID " + dto.getGenreId() + " not found"));
-//            book.setBookGenre(genre);
-//        }
+        if (bookDto.getGenreId() != null) {
+            Genre genre = genreRepository.findById(bookDto.getGenreId())
+                    .orElseThrow(() -> new BookException("Genre with ID " + bookDto.getGenreId() + " not found"));
+            book.setBookGenre(genre);
+        }
         book.setPublisher(bookDto.getPublisher());
         book.setPublicationDate(bookDto.getPublicationDate());
         book.setLanguage(bookDto.getLanguage());
@@ -63,7 +67,7 @@ public class BookMapper
         book.setAvailableCopies(bookDto.getAvailableCopies());
         book.setPriceOfBook(bookDto.getPriceOfBook());
         book.setCoverImageUrl(bookDto.getCoverImageUrl());
-        book.setIsActive(true); // Default to active
+        book.setIsActive(true);
         return book;
     }
 }
