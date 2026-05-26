@@ -3,6 +3,7 @@ package com.vinay.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,13 +36,13 @@ public class Book
     @Size(max = 255,message = "Book author name can't be empty")
     private String bookAuthor;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @NotNull(message = "Genre is mandatory")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id", nullable = false)
     private Genre bookGenre;
 
     @Size(max = 255,message = "Book publisher can't be empty")
     private String  publisher;
-
 
     private LocalDate publicationDate;
 

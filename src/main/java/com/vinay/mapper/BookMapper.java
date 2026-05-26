@@ -10,23 +10,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class BookMapper
-{
-    private final BookException bookException;
+public class BookMapper {
     private final GenreRepository genreRepository;
 
-    private BookDto toDto(Book book)
-    {
-        if (book==null)return null;
+    public BookDto toDto(Book book) {
+        if (book == null) return null;
 
-        BookDto bookDto=new BookDto();
+        BookDto bookDto = new BookDto();
         bookDto.setId(book.getId());
         bookDto.setIsbn(book.getIsbn());
         bookDto.setBookTitle(book.getBookTitle());
 
-        if(book.getBookGenre()!=null)
-        {
-            bookDto.setId(book.getBookGenre().getId());
+        if (book.getBookGenre() != null) {
+            bookDto.setGenreId(book.getBookGenre().getId());
             bookDto.setGenreName(book.getBookGenre().getName());
             bookDto.setGenreCode(book.getBookGenre().getCode());
         }
@@ -47,9 +43,9 @@ public class BookMapper
         return bookDto;
     }
 
-    private Book toEntity(BookDto bookDto) throws BookException {
-        Book book=new Book();
-        book.setId(bookDto.getId());
+    public Book toEntity(BookDto bookDto) throws BookException {
+        Book book = new Book();
+
         book.setIsbn(bookDto.getIsbn());
         book.setBookAuthor(bookDto.getBookAuthor());
         book.setBookTitle(bookDto.getBookTitle());
@@ -69,5 +65,30 @@ public class BookMapper
         book.setCoverImageUrl(bookDto.getCoverImageUrl());
         book.setIsActive(true);
         return book;
+    }
+
+    public BookDto toUpdateBook(BookDto bookDto, Book book) throws BookException {
+        if (bookDto == null || book == null) return null;
+
+        book.setBookTitle(bookDto.getBookTitle());
+        book.setBookAuthor(bookDto.getBookAuthor());
+        if (bookDto.getGenreId() != null) {
+            Genre genre = genreRepository.findById(bookDto.getGenreId())
+                    .orElseThrow(() -> new BookException("Genre with ID " + bookDto.getGenreId() + " not found"));
+            book.setBookGenre(genre);
+        }
+        book.setPublisher(bookDto.getPublisher());
+        book.setPublicationDate(bookDto.getPublicationDate());
+        book.setLanguage(bookDto.getLanguage());
+        book.setNoOfPages(bookDto.getNoOfPages());
+        book.setDescription(bookDto.getDescription());
+        book.setTotalCopies(bookDto.getTotalCopies());
+        book.setAvailableCopies(bookDto.getAvailableCopies());
+        book.setPriceOfBook(bookDto.getPriceOfBook());
+        book.setCoverImageUrl(bookDto.getCoverImageUrl());
+        if(bookDto.getIsActive() != null) {
+            book.setIsActive(bookDto.getIsActive());
+        }
+        return toDto(book);
     }
 }
