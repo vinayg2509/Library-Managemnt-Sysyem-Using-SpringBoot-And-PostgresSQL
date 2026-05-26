@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/api/books")
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
